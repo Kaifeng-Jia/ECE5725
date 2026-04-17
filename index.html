@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ECE 5725 Final Project | Smart Desk Assistant</title>
+  <meta name="description" content="ECE 5725 Final Project: PiTFT Smart Desk Assistant with voice, calendar, weather, timer, and face tracking.">
+  <meta name="author" content="Kaifeng Jia, Ziyang Chen">
+
+  <!-- Bootstrap core CSS (local) -->
+  <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="starter-template.css" rel="stylesheet">
+
+  <!-- Fonts (safe, system) -->
+</head>
+
+<body data-spy="scroll" data-target="#navbar" data-offset="90">
+
+  <!-- Top Nav -->
+  <nav class="navbar navbar-inverse navbar-fixed-top nav-glass">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#top">Smart Desk Assistant</a>
+      </div>
+
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="#top">Home</a></li>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#objective">Objective</a></li>
+          <li><a href="#design">Design & Testing</a></li>
+          <li><a href="#roadblocks">Roadblocks</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#parts">Parts</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#appendix">Code</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header id="top" class="hero">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="hero-badge">ECE 5725 • 25 Fall Final Project</div>
+          <h1 class="hero-title">Smart Desk Assistant</h1>
+          <p class="hero-subtitle">
+            A PiTFT-based assistant that combines a clean touch UI (Calendar / Weather / Timer / Assistant),
+            voice interaction, and camera-based face tracking.
+          </p>
+
+          <div class="hero-chips">
+            <span class="chip">Raspberry Pi</span>
+            <span class="chip">PiTFT + PyGame</span>
+            <span class="chip">Vosk ASR</span>
+            <span class="chip">TTS</span>
+            <span class="chip">OpenAI API</span>
+            <span class="chip">Face Tracking</span>
+          </div>
+
+        </div>
+
+        <div class="col-md-5">
+          <div class="card card-hero">
+            <div class="card-header">Quick Demo</div>
+            <div class="ratio ratio-16x9">
+              <!-- Replace VIDEO_ID with your actual YouTube video id -->
+              <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Demo Video" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            </div>
+            <div class="card-footer muted">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="hero-glow"></div>
+  </header>
+
+  <main class="container main">
+
+    <!-- INTRODUCTION -->
+    <section id="introduction" class="section-card">
+      <h2>Introduction</h2>
+
+      <p>
+        In this project, we designed and implemented a Raspberry Pi–based Desktop Assistant
+        as an embedded system that integrates multiple interaction modalities, including
+        touch, voice, and visual feedback.
+      </p>
+
+      <p>
+        The system is built around a Raspberry Pi with a PiTFT touchscreen, physical GPIO
+        buttons, a microphone, a speaker, and a camera module. These components enable
+        standalone operation and allow users to interact with the device through
+        touchscreen input, button presses, and voice commands.
+      </p>
+    </section>
+
+
+    <!-- OBJECTIVE -->
+    <section id="objective" class="section">
+      <div class="section-title">
+        <h2>Objective</h2>
+      </div>
+
+      <!-- Image on top -->
+      <div class="card card-media objective-image">
+        <img class="img-responsive img-rounded" src="pics/object.jpg" alt="Desktop Assistant hardware prototype">
+      </div>
+
+      <!-- Text below -->
+      <div class="card">
+        <div class="card-body">
+          <ul class="checklist">
+            <li><b>Touch UI</b>: a right-side menu with four applications (Calendar, Weather, Timer, Assistant).</li>
+            <li><b>Voice assistant</b>: wake-word detection, speech-to-text, response generation, and text-to-speech.</li>
+            <li><b>Face tracking</b>: detect the user’s face and rotate the camera platform horizontally to re-center.</li>
+            <li><b>Usability</b>: a hardware “Back” button that works consistently across all screens.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- DESIGN & TESTING -->
+    <section id="design" class="section">
+      <div class="section-title">
+        <h2>Design and Testing</h2>
+      </div>
+
+      <!-- Hardware -->
+      <div id="hardware" class="card">
+        <div class="card-header">
+          <span class="kicker">Design</span>
+          <h3>Hardware Design</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-7">
+              <p>
+                The hardware system is built around a Raspberry Pi with a PiTFT touchscreen and integrates
+                physical buttons, audio I/O, and a camera module to support touch, voice, and vision-based
+                interaction. A USB microphone captures user speech, and a speaker plays text-to-speech (TTS)
+                responses. A camera is mounted on a single-axis pan mechanism driven by a servo motor to enable
+                horizontal face tracking.
+              </p>
+              <ul class="bullets">
+                <li><b>Inputs</b>: PiTFT touch, GPIO buttons, microphone, camera.</li>
+                <li><b>Outputs</b>: PiTFT display, speaker, servo motor.</li>
+                <li><b>Power</b>: stable 5V supply to avoid brownouts during audio playback and servo movement.</li>
+              </ul>
+            </div>
+            <div class="col-md-5">
+              <div class="callout">
+                <div class="callout-title">Pin / IO highlights</div>
+                <div>
+                  Several GPIO buttons provide reliable control without a keyboard or mouse. One button is configured
+                  as a global “Back” action across all screens to ensure consistent navigation.
+                </div>
+              </div>
+              <div class="callout" style="margin-top:12px;">
+                <div class="callout-title">Mechanical</div>
+                <div>
+                  The camera is mounted in landscape orientation on a single-axis pan mechanism. The servo motion
+                  range is constrained in software to prevent mechanical collision, and small offsets are ignored to
+                  reduce jitter during tracking.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Software -->
+      <div id="software" class="card">
+        <div class="card-header">
+          <span class="kicker">Design</span>
+          <h3>Software Design</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="mini-title">UI (PyGame on PiTFT)</h4>
+              <ul class="bullets">
+                <li>Main menu: four application buttons (Calendar, Weather, Timer, Assistant).</li>
+                <li>Each module uses a lightweight render loop and avoids long blocking work in the UI path.</li>
+                <li>A single GPIO handler provides consistent “Back” behavior across all screens.</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h4 class="mini-title">Assistant pipeline</h4>
+              <ul class="bullets">
+                <li>Wake-word detection triggers the interaction loop.</li>
+                <li>Speech-to-text produces a query that is sent to the language model for response generation.</li>
+                <li>The response is played back using text-to-speech, while the UI reflects assistant states.</li>
+              </ul>
+            </div>
+          </div>
+
+          <hr class="soft">
+
+          <h4 class="mini-title">Face tracking loop</h4>
+          <p>
+            The face tracking module runs as a simple control loop: detect a face in each frame, compute the horizontal
+            offset relative to the image center, and update the servo target angle to reduce the offset while respecting
+            motion limits.
+          </p>
+          <ul class="bullets">
+            <li><b>Input</b>: camera frames. <b>Output</b>: servo target angle (pan axis only).</li>
+            <li>Face position is smoothed to reduce detection noise and avoid rapid oscillation.</li>
+            <li>A dead-zone threshold is used so small offsets do not trigger unnecessary motion.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- System Test -->
+      <div id="systemtest" class="card">
+        <div class="card-header">
+          <span class="kicker">Testing</span>
+          <h3>System Test</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="metric">
+                <div class="metric-label">Touch UI latency</div>
+                <div class="metric-value">Qualitative: responsive</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Wake word reliability</div>
+                <div class="metric-value">Qualitative: consistent in quiet conditions</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="metric">
+                <div class="metric-label">End-to-end assistant response</div>
+                <div class="metric-value">Depends on ASR, network, LLM, and TTS</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Face centering accuracy</div>
+                <div class="metric-value">Stable tracking within a small horizontal offset</div>
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top:12px;">
+            We tested each module independently (UI navigation, calendar/weather/timer behavior, assistant Q&amp;A,
+            and face tracking), then validated end-to-end operation by running the full system continuously and
+            performing repeated interactions across touch, button, voice, and vision modes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ROADBLOCKS -->
+    <section id="roadblocks" class="section">
+      <div class="section-title">
+        <h2>Key Roadblocks</h2>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="mini-title">Audio sample rate mismatch</h4>
+              <p>
+                During early integration of speech recognition and text-to-speech, we encountered
+                ALSA and PortAudio errors caused by mismatched audio sample rates (e.g., 44.1 kHz
+                versus 16 kHz). This prevented reliable audio capture and playback.
+              </p>
+              <p>
+                We resolved this issue by explicitly configuring a consistent sample rate across
+                the microphone input, Vosk recognizer, and TTS output, ensuring stable end-to-end
+                audio operation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="mini-title">Performance and UI freezing</h4>
+              <p>
+                Network requests and blocking operations initially caused the PiTFT interface to
+                freeze or become unresponsive, especially when fetching weather data or waiting
+                for assistant responses.
+              </p>
+              <p>
+                This was mitigated by separating time-consuming tasks from the UI render loop and
+                caching data where possible, allowing the interface to remain responsive during
+                normal use.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="mini-title">Servo power and torque limits</h4>
+              <p>
+                The SG90 servo motor used for face tracking has limited torque and was sensitive
+                to sudden position changes, which sometimes resulted in unstable motion.
+              </p>
+              <p>
+                To address this, we constrained the servo motion range in software and applied
+                smoothing and dead-zone thresholds to reduce unnecessary movement and mechanical
+                stress.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="mini-title">False wake-ups</h4>
+              <p>
+                Wake-word detection occasionally triggered unintentionally due to background noise
+                or similar-sounding words, affecting the user experience.
+              </p>
+              <p>
+                We improved reliability by refining state transitions, filtering partial recognition
+                results, and restricting wake-word detection to specific assistant states.
+              </p>
+                <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+     <!-- RESULTS -->
+    <section id="results" class="section">
+      <div class="section-title">
+        <h2>Results and Conclusion</h2>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <p>
+            The final system successfully integrates a responsive PiTFT touch interface and a
+            voice-based assistant into a single standalone desktop device. All four core
+            applications—Calendar, Weather, Timer, and Assistant—operated reliably during
+            extended testing and live demonstrations.
+          </p>
+
+          <p>
+            Users were able to navigate between applications using the touchscreen and physical
+            buttons, view real-time information, run countdown timers, and interact with the
+            assistant through voice commands with audible responses. These results demonstrate
+            that the system meets the original project objectives and provides a functional
+            multi-modal desktop assistant.
+          </p>
+
+          <hr class="soft">
+
+          <!-- Results images: four core functions -->
+          <div class="row">
+            <div class="col-md-6">
+              <img
+                class="img-responsive img-rounded"
+                src="pics/result_calendar.jpg"
+                alt="Calendar application running on the desktop assistant"
+              >
+              <p style="margin-top:6px;">
+                <b>Figure 1.</b> Calendar interface displaying the current month.
+              </p>
+            </div>
+
+            <div class="col-md-6">
+              <img
+                class="img-responsive img-rounded"
+                src="pics/result_weather.jpg"
+                alt="Weather application running on the desktop assistant"
+              >
+              <p style="margin-top:6px;">
+                <b>Figure 2.</b> Weather interface showing current conditions.
+              </p>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px;">
+            <div class="col-md-6">
+              <img
+                class="img-responsive img-rounded"
+                src="pics/result_timer.jpg"
+                alt="Timer application running on the desktop assistant"
+              >
+              <p style="margin-top:6px;">
+                <b>Figure 3.</b> Timer application during countdown operation.
+              </p>
+            </div>
+
+            <div class="col-md-6">
+              <img
+                class="img-responsive img-rounded"
+                src="pics/result_assistant.jpg"
+                alt="Voice assistant interface during user interaction"
+              >
+              <p style="margin-top:6px;">
+                <b>Figure 4.</b> Voice assistant interface during user interaction.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- PARTS -->
+    <section id="parts" class="section">
+      <div class="section-title">
+        <h2>Parts List</h2>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-condensed table-parts">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Unit Cost</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Raspberry Pi</td>
+                  <td>1</td>
+                  <td>$60(lab)</td>
+                  <td>$60(lab)</td>
+                </tr>
+                <tr>
+                  <td>PiTFT Touchscreen</td>
+                  <td>1</td>
+                  <td>$44.95(lab)</td>
+                  <td>$44.95(lab)</td>
+                </tr>
+                <tr>
+                  <td>Raspberry Pi Camera</td>
+                  <td>1</td>
+                  <td>$29.95(lab)</td>
+                  <td>$29.95(lab)</td>
+                </tr>
+                <tr>
+                  <td>Microphone + Speaker</td>
+                  <td>1</td>
+                  <td>$15.95</td>
+                  <td>$15.95</td>
+                </tr>
+                <tr>
+                  <td>Servo Motor</td>
+                  <td>1</td>
+                  <td>$5.95(lab)</td>
+                  <td>$5.95(lab)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="total">
+            <b>Total:</b> $15.95
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+     <!-- WORK -->
+    <section id="work" class="section">
+      <div class="section-title">
+        <h2>Work Distribution</h2>
+      </div>
+
+      <!-- Kaifeng -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-body person-large">
+          <img src="pics/b.jpg" alt="Kaifeng Jia">
+
+          <div class="person-info">
+            <div class="person-name">Kaifeng Jia</div>
+            <div class="person-email">kj366@cornell.edu</div>
+
+            <ul class="bullets small">
+              <li>Assistant state machine design</li>
+              <li>System UI design</li>
+              <li>Timer module implementation</li>
+              <li>Hardware assembly and device integration</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ziyang -->
+      <div class="card">
+        <div class="card-body person-large">
+          <img src="pics/a.png" alt="Ziyang Chen">
+
+          <div class="person-info">
+            <div class="person-name">Ziyang Chen</div>
+            <div class="person-email">zc579@cornell.edu</div>
+
+            <ul class="bullets small">
+              <li>Speech recognition model deployment</li>
+              <li>Calendar module implementation</li>
+              <li>Weather module implementation</li>
+              <li>Face-tracking model deployment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+        <!-- CODE APPENDIX -->
+    <section id="code" class="section">
+      <div class="section-title">
+        <h2>Code Appendix</h2>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <p>
+            The complete source code for this project, including the UI implementation,
+            assistant pipeline, and face-tracking modules, is available on GitHub:
+          </p>
+
+          <p>
+            <a
+              href="https://github.com/zc579/ECE5725-final-project"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="code-link"
+            >
+               View the full project code on GitHub
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+
+      <footer class="footer">
+        <div>ECE 5725 • Cornell University • 2025</div>
+      </footer>
+
+  </main>
+
+</body>
+
+</html>
